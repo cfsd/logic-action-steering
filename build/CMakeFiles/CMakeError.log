@@ -1,0 +1,35 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/oscar/cluon-cfsd18/logic-steering/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_843ef/fast"
+/usr/bin/make -f CMakeFiles/cmTC_843ef.dir/build.make CMakeFiles/cmTC_843ef.dir/build
+make[1]: Entering directory '/home/oscar/cluon-cfsd18/logic-steering/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_843ef.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_843ef.dir/CheckSymbolExists.c.o   -c /home/oscar/cluon-cfsd18/logic-steering/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_843ef
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_843ef.dir/link.txt --verbose=1
+/usr/bin/cc    -static-libgcc -static-libstdc++  -rdynamic CMakeFiles/cmTC_843ef.dir/CheckSymbolExists.c.o  -o cmTC_843ef 
+CMakeFiles/cmTC_843ef.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x1b): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_843ef.dir/build.make:97: recipe for target 'cmTC_843ef' failed
+make[1]: *** [cmTC_843ef] Error 1
+make[1]: Leaving directory '/home/oscar/cluon-cfsd18/logic-steering/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_843ef/fast' failed
+make: *** [cmTC_843ef/fast] Error 2
+
+File /home/oscar/cluon-cfsd18/logic-steering/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
