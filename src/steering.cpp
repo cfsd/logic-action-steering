@@ -35,7 +35,7 @@ int32_t main(int32_t argc, char **argv) {
     if ((0 == commandlineArguments.count("cid")) || (0 == commandlineArguments.count("verbose"))) {
         std::cerr << argv[0] << " not enought input arguments." << std::endl;
         std::cerr << "Usage:   " << argv[0] << " --cid=<OpenDaVINCI session> [--id=<Identifier in case of multiple beaglebone units>] [--verbose]" << std::endl;
-        std::cerr << "Example: " << argv[0] << " --cid=111 --id=1 --verbose=1 --freq=30" << std::endl;
+        std::cerr << "Example: " << argv[0] << " --cid=111 --cidSteering=219 --id=1 --verbose=1" << std::endl;
         retCode = 1;
     } else {
         const uint32_t ID{(commandlineArguments["id"].size() != 0) ? static_cast<uint32_t>(std::stoi(commandlineArguments["id"])) : 0};
@@ -46,15 +46,16 @@ int32_t main(int32_t argc, char **argv) {
         // Interface to a running OpenDaVINCI session.
 
         cluon::OD4Session od4{static_cast<uint16_t>(std::stoi(commandlineArguments["cid"]))};
+        cluon::OD4Session od4_proxy{static_cast<uint16_t>(std::stoi(commandlineArguments["cidSteering"]))};
 
-        Steering steering(VERBOSE, ID, od4);
+
+        Steering steering(VERBOSE, ID, od4_proxy);
 
        auto catchContainer{[&steering](cluon::data::Envelope &&envelope)
         {
             // if (!steering.getInitialised()){
             //     return;
             // }
-            std::cout << "Recieved container, sending to steering" << std::endl;
             steering.nextContainer(envelope);
         }};
 

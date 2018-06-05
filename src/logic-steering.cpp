@@ -25,14 +25,13 @@
 
 
 
-Steering::Steering(bool verbose, uint32_t id, cluon::OD4Session &od4)
-  : m_od4(od4)
-{
-  setUp();
-  (void)verbose;
-  (void)od4;
-  (void)id;
-}
+Steering::Steering(bool verbose, uint32_t id, cluon::OD4Session &od4_proxy)
+  : m_od4_proxy(od4_proxy)
+  , m_verbose(verbose)
+  , m_latestMessage()
+  {
+  setUp(id);
+  }
 
 Steering::~Steering()
 {
@@ -40,30 +39,34 @@ Steering::~Steering()
 }
 
 
-void Steering::nextContainer(cluon::data::Envelope &a_container)
-{
-  std::cout << "I recieved a container!" << std::endl;
+void Steering::nextContainer(cluon::data::Envelope &a_container){
   if (a_container.dataType() == opendlv::logic::action::AimPoint::ID()) {
-    auto steering = cluon::extractMessage<opendlv::logic::action::AimPoint>(std::move(a_container));
-    float azimuth = steering.azimuthAngle();
-    float distance = steering.distance();
-    float delta = calcSteering(azimuth, distance);
-    float rackPosition = calcRackPosition(delta);
-    (void) rackPosition; // Ask Dan if we send rack pos or delta
-    opendlv::proxy::GroundAccelerationRequest out1;
-    out1.groundSteering(delta);
+    if (cluon::time::toMicroseconds(a_container.sampleTimeStamp()) > cluon::time::toMicroseconds(m_latestMessage)) {
+      auto steering = cluon::extractMessage<opendlv::logic::action::AimPoint>(std::move(a_container));
+      float azimuth = steering.azimuthAngle();
+      float distance = steering.distance();
+      float delta = calcSteering(azimuth, distance);
+      float rackPosition = calcRackPosition(delta);
 
-    std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
-    cluon::data::TimeStamp sampleTime = cluon::time::convert(tp);
+      opendlv::proxy::GroundSteeringRequest out1;
+      out1.groundSteering(rackPosition);
 
-    m_od4.send(out1,sampleTime,1);
+      std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
+      cluon::data::TimeStamp sampleTime = cluon::time::convert(tp);
+
+      m_od4_proxy.send(out1,sampleTime,1);
+    }
   }
 }
 
-void Steering::setUp()
+void Steering::setUp(u_int32_t id)
 {
-  // std::string const exampleConfig =
-  std::cout << "Setting up steering" << std::endl;
+  if (m_verbose){
+    std::cout << "Setting up steering" << std::endl;
+    std::cout << "Steering ID: " << id << std::endl;
+  }
+  std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
+  m_latestMessage = cluon::time::convert(tp);
 }
 
 void Steering::tearDown()
@@ -71,13 +74,13 @@ void Steering::tearDown()
 }
 
 float Steering::calcRackPosition(float delta) {
-  const float conversionConst = 46.76;
+  const float conversionConst = 46.76f;
   float rackPosition = delta*conversionConst; // rack position in mm
   return rackPosition;
 }
 
 float Steering::calcSteering(float azimuth, float distance) {
-  float Kp = 2.0f;
+  float Kp = 1.0f;
   float delta = Kp*azimuth*distance;
 
   return delta;

@@ -30,12 +30,14 @@ class Steering {
   void nextContainer(cluon::data::Envelope &);
 
  private:
-   void setUp();
+   void setUp(u_int32_t);
    void tearDown();
    float calcSteering(float, float);
    float calcRackPosition(float);
 
  private:
-   cluon::OD4Session &m_od4;
+   cluon::OD4Session &m_od4_proxy;
+   bool m_verbose;
+   cluon::data::TimeStamp m_latestMessage;
 };
 #endif
