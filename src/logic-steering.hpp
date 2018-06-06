@@ -39,5 +39,6 @@ class Steering {
    cluon::OD4Session &m_od4_proxy;
    bool m_verbose;
    cluon::data::TimeStamp m_latestMessage;
+   float m_prevPos;
 };
 #endif
