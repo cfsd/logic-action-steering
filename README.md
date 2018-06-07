@@ -2,7 +2,7 @@
 
 This repository provides source code for beaglebones for the OpenDLV.io software ecosystem.
 
-[![Build Status](https://travis-ci.org/cfsd/logic-action-steering.svg?branch=master)](https://travis-ci.org/cfsd/logic-action-steering)
+[![Build Status](https://travis-ci.org/cfsd/logic-action-steering.svg?branch=pre-release)](https://travis-ci.org/cfsd/logic-action-steering)
 
 
 ## Table of Contents
