@@ -65,8 +65,14 @@ int32_t main(int32_t argc, char **argv) {
 
         // Just sleep as this microservice is data driven.
         using namespace std::literals::chrono_literals;
-        while (od4.isRunning()) {
-          std::this_thread::sleep_for(1s);
+        while (od4.isRunning()) {          std::this_thread::sleep_for(.05s);
+          opendlv::system::SignalStatusMessage heartBeat;
+          heartBeat.code(1);
+
+          std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
+          cluon::data::TimeStamp sampleTime = cluon::time::convert(tp);
+
+          od4.send(heartBeat,sampleTime,314);
        }
     }
     return retCode;
