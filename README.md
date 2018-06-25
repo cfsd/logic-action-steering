@@ -2,7 +2,7 @@
 
 This repository provides source code for beaglebones for the OpenDLV.io software ecosystem.
 
-
+[![Build Status](https://travis-ci.org/cfsd/logic-action-steering.svg?branch=pre-release)](https://travis-ci.org/cfsd/logic-action-steering)
 
 
 ## Table of Contents
@@ -77,4 +77,3 @@ docker-compose -f beaglebone.yml up
 ## License
 
 * This project is released under the terms of the GNU GPLv3 License
-

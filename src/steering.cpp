@@ -33,33 +33,30 @@ int32_t main(int32_t argc, char **argv) {
     int32_t retCode{0};
     auto commandlineArguments = cluon::getCommandlineArguments(argc, argv);
     if ((0 == commandlineArguments.count("cid")) || (0 == commandlineArguments.count("verbose"))) {
-        std::cerr << argv[0] << " not enought input arguments." << std::endl;
-        std::cerr << "Usage:   " << argv[0] << " --cid=<OpenDaVINCI session> [--id=<Identifier in case of multiple beaglebone units>] [--verbose]" << std::endl;
-        std::cerr << "Example: " << argv[0] << " --cid=111 --cidSteering=219 --id=1 --verbose=1" << std::endl;
-        retCode = 1;
-    } else {
-        const uint32_t ID{(commandlineArguments["id"].size() != 0) ? static_cast<uint32_t>(std::stoi(commandlineArguments["id"])) : 0};
-        const bool VERBOSE{commandlineArguments.count("verbose") != 0};
-        //const float FREQ{std::stof(commandlineArguments["freq"])};
-        std::cout << "Micro-Service ID:" << ID << std::endl;
+        std::cout << argv[0] << " not enought input arguments. Assigning default values." << std::endl;
+        std::cout << "Default: " << argv[0] << " --cid=111 --cidSteering=219 --id=1 --verbose=1" << std::endl;
+        std::cout << "Usage:   " << argv[0] << " --cid=<OpenDaVINCI session> [--id=<Identifier in case of multiple beaglebone units>] [--verbose]" << std::endl;
+    }
 
-        // Interface to a running OpenDaVINCI session.
+    const uint32_t ID{(commandlineArguments["id"].size() != 0) ? static_cast<uint32_t>(std::stoi(commandlineArguments["id"])) : 1};
+    const uint16_t cid{(commandlineArguments["cid"].size() != 0) ? static_cast<uint16_t>(std::stoi(commandlineArguments["cid"])) : (uint16_t) 111};
+    const uint16_t cidSteering{(commandlineArguments["cidSteering"].size() != 0) ? static_cast<uint16_t>(std::stoi(commandlineArguments["cidSteering"])) : (uint16_t) 219};
+    const bool VERBOSE{(commandlineArguments["verbose"].size() != 0) ? commandlineArguments.count("verbose") != 0 : 1};
 
-        cluon::OD4Session od4{static_cast<uint16_t>(std::stoi(commandlineArguments["cid"]))};
-        cluon::OD4Session od4_proxy{static_cast<uint16_t>(std::stoi(commandlineArguments["cidSteering"]))};
+    std::cout << "Micro-Service ID:" << ID << std::endl;
 
 
-        Steering steering(VERBOSE, ID, od4_proxy);
+    cluon::OD4Session od4{cid};
+    cluon::OD4Session od4_proxy{cidSteering};
 
-       auto catchContainer{[&steering](cluon::data::Envelope &&envelope)
-        {
-            // if (!steering.getInitialised()){
-            //     return;
-            // }
-            steering.nextContainer(envelope);
-        }};
+    Steering steering(VERBOSE, ID, od4_proxy);
 
-        od4.dataTrigger(opendlv::logic::action::AimPoint::ID(), catchContainer);
+    auto catchContainer{[&steering](cluon::data::Envelope &&envelope)
+      {
+          steering.nextContainer(envelope);
+      }};
+
+      od4.dataTrigger(opendlv::logic::action::AimPoint::ID(), catchContainer);
 
 
 
