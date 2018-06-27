@@ -54,13 +54,13 @@ void Steering::nextContainer(cluon::data::Envelope &a_container){
 
       if (std::abs(rackPosition-m_prevPos) > tol){
         opendlv::proxy::GroundSteeringRequest out1;
-        out1.groundSteering(rackPosition);
+        out1.groundSteering(0.0f);
 
         std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
         cluon::data::TimeStamp sampleTime = cluon::time::convert(tp);
 
         m_prevPos = rackPosition;
-        m_od4_proxy.send(out1,sampleTime,1);
+        m_od4_proxy.send(out1,sampleTime,333);
       }
     }
   }
