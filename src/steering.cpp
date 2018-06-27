@@ -42,7 +42,7 @@ int32_t main(int32_t argc, char **argv) {
     const uint16_t cid{(commandlineArguments["cid"].size() != 0) ? static_cast<uint16_t>(std::stoi(commandlineArguments["cid"])) : (uint16_t) 111};
     const uint16_t cidSteering{(commandlineArguments["cidSteering"].size() != 0) ? static_cast<uint16_t>(std::stoi(commandlineArguments["cidSteering"])) : (uint16_t) 219};
     const bool VERBOSE{(commandlineArguments["verbose"].size() != 0) ? commandlineArguments.count("verbose") != 0 : 1};
-    const bool zeroDelta{(commandlineArguments["zeroDelta"].size() != 0) ? commandlineArguments.count("zeroDelta") != 0 : 0};
+    const bool zeroDelta{(commandlineArguments["zeroDelta"].size() != 0) ? commandlineArguments["zeroDelta"] : 0};
 
 
     std::cout << "Micro-Service ID:" << ID << std::endl;
@@ -75,6 +75,9 @@ int32_t main(int32_t argc, char **argv) {
         cluon::data::TimeStamp sampleTime = cluon::time::convert(tp);
 
         od4.send(heartBeat,sampleTime,314);
+
+        opendlv::logic::action::AimPoint aimPoint;
+        od4.send(aimPoint,sampleTime,314);
 
         if(zeroDelta==1){
           opendlv::proxy::GroundSteeringRequest rackPos;
