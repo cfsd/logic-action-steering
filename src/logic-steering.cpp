@@ -48,6 +48,7 @@ void Steering::nextContainer(cluon::data::Envelope &a_container){
       float azimuth = steering.azimuthAngle();
       float distance = steering.distance();
       float delta = calcSteering(azimuth, distance);
+      delta = 0.0f;
       float rackPosition = calcRackPosition(delta);
 
 
