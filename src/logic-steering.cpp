@@ -25,11 +25,12 @@
 
 
 
-Steering::Steering(bool verbose, uint32_t id, cluon::OD4Session &od4_proxy)
+Steering::Steering(bool verbose, uint32_t id, cluon::OD4Session &od4_proxy, float Kp)
   : m_od4_proxy(od4_proxy)
   , m_verbose(verbose)
   , m_latestMessage()
   , m_prevPos()
+  , m_Kp(Kp)
   {
   setUp(id);
   }
@@ -70,6 +71,7 @@ void Steering::setUp(u_int32_t id)
   if (m_verbose){
     std::cout << "Setting up steering" << std::endl;
     std::cout << "Steering ID: " << id << std::endl;
+    std::cout << m_Kp << std::endl;
   }
   std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
   m_latestMessage = cluon::time::convert(tp);
@@ -88,8 +90,7 @@ float Steering::calcRackPosition(float delta) {
 }
 
 float Steering::calcSteering(float azimuth, float distance) {
-  float Kp = 2.0f;
-  float delta = Kp*azimuth;
+  float delta = m_Kp*azimuth;
   (void) distance;
   return delta;
 }

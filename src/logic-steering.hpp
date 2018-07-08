@@ -25,7 +25,7 @@
 
 class Steering {
  public:
-  Steering(bool verbose, uint32_t id, cluon::OD4Session &od4);
+  Steering(bool verbose, uint32_t id, cluon::OD4Session &od4, float);
   ~Steering();
   void nextContainer(cluon::data::Envelope &);
 
@@ -40,5 +40,6 @@ class Steering {
    bool m_verbose;
    cluon::data::TimeStamp m_latestMessage;
    float m_prevPos;
+   float m_Kp;
 };
 #endif

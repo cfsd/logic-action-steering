@@ -42,6 +42,7 @@ int32_t main(int32_t argc, char **argv) {
     const uint16_t cid{(commandlineArguments["cid"].size() != 0) ? static_cast<uint16_t>(std::stoi(commandlineArguments["cid"])) : (uint16_t) 111};
     const uint16_t cidSteering{(commandlineArguments["cidSteering"].size() != 0) ? static_cast<uint16_t>(std::stoi(commandlineArguments["cidSteering"])) : (uint16_t) 219};
     const bool VERBOSE{(commandlineArguments["verbose"].size() != 0) ? commandlineArguments.count("verbose") != 0 : 1};
+    const float Kp{(commandlineArguments["Kp"].size() != 0) ? static_cast<float>(std::stof(commandlineArguments["Kp"])) : (float) 1};
 
     std::cout << "Micro-Service ID:" << ID << std::endl;
 
@@ -49,7 +50,7 @@ int32_t main(int32_t argc, char **argv) {
     cluon::OD4Session od4{cid};
     cluon::OD4Session od4_proxy{cidSteering};
 
-    Steering steering(VERBOSE, ID, od4_proxy);
+    Steering steering(VERBOSE, ID, od4_proxy, Kp);
 
     auto catchContainer{[&steering](cluon::data::Envelope &&envelope)
       {
