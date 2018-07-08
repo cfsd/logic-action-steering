@@ -83,6 +83,7 @@ void Steering::tearDown()
 float Steering::calcRackPosition(float delta) {
   const float conversionConst = 46.76f;
   float rackPosition = delta*conversionConst; // rack position in mm
+  rackPosition = std::max(std::min(rackPosition,20.0f),-20.0f);
   return rackPosition;
 }
 
