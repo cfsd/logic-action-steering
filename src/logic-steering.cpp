@@ -26,14 +26,15 @@
 
 
 
-Steering::Steering(bool verbose, uint32_t id, cluon::OD4Session &od4_proxy, float Ku)
+Steering::Steering(bool verbose, uint32_t id, cluon::OD4Session &od4_proxy, float Ku, float Kp)
   : m_od4_proxy(od4_proxy)
   , m_verbose(verbose)
   , m_latestMessage()
   , m_prevPos()
   , m_Ku(Ku)
+  , m_Kp(Kp)
   , m_speedMutex()
-  , m_groundSpeed()
+  , m_groundSpeed(0.0f)
   {
   setUp(id);
   }
@@ -110,7 +111,17 @@ float Steering::calcSteering(float azimuth, float distance) {
     u = m_groundSpeed;
   }
   float yawRateRef = std::copysign(u/R,azimuth);
-  float delta = static_cast<float>((L+Ku*m*pow(u,2))*yawRateRef/u);
-  (void) distance;
+  float delta;
+  float deltaYaw = static_cast<float>((L+Ku*m*pow(u,2))*yawRateRef/u);
+  float deltaKp = m_Kp*azimuth;
+  float k;
+  if (u>2){
+    k = 1;
+  } else if(u>1){
+    k = u-1;
+  } else {
+    k = 0;
+  }
+  delta = (1-k)*deltaKp + k*deltaYaw;
   return delta;
 }

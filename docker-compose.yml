@@ -1,7 +1,0 @@
-version: '2'
-
-services:
-    steering:
-        image: steering:test
-        network_mode: "host"
-        command: "steering --cid=111 --cidSteering=112 --Kp=1.3"
