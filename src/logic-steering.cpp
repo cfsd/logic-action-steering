@@ -20,17 +20,20 @@
 #include <iostream>
 #include "cluon-complete.hpp"
 #include "logic-steering.hpp"
+#include <math.h>
 
 #define PI 3.14159265359f
 
 
 
-Steering::Steering(bool verbose, uint32_t id, cluon::OD4Session &od4_proxy, float Kp)
+Steering::Steering(bool verbose, uint32_t id, cluon::OD4Session &od4_proxy, float Ku)
   : m_od4_proxy(od4_proxy)
   , m_verbose(verbose)
   , m_latestMessage()
   , m_prevPos()
-  , m_Kp(Kp)
+  , m_Ku(Ku)
+  , m_speedMutex()
+  , m_groundSpeed()
   {
   setUp(id);
   }
@@ -64,6 +67,14 @@ void Steering::nextContainer(cluon::data::Envelope &a_container){
       }
     }
   }
+
+  if (a_container.dataType() == opendlv::proxy::GroundSpeedReading::ID()) {
+    if (a_container.senderStamp()==112) {
+      auto speed = cluon::extractMessage<opendlv::proxy::GroundSpeedReading>(std::move(a_container));
+      std::lock_guard<std::mutex> lockSpeed(m_speedMutex);
+      m_groundSpeed = speed.groundSpeed();
+    }
+  }
 }
 
 void Steering::setUp(u_int32_t id)
@@ -71,7 +82,6 @@ void Steering::setUp(u_int32_t id)
   if (m_verbose){
     std::cout << "Setting up steering" << std::endl;
     std::cout << "Steering ID: " << id << std::endl;
-    std::cout << m_Kp << std::endl;
   }
   std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
   m_latestMessage = cluon::time::convert(tp);
@@ -90,7 +100,17 @@ float Steering::calcRackPosition(float delta) {
 }
 
 float Steering::calcSteering(float azimuth, float distance) {
-  float delta = m_Kp*azimuth;
+  float Ku = static_cast<float>(-2.0574e-05); // understeer parameter
+  float L  = 1.53f;
+  float m  = 217;
+  float R = static_cast<float>(distance/(std::sqrt(2*(1-std::cos(2*azimuth)))));
+  float u;
+  {
+    std::lock_guard<std::mutex> lockSpeed(m_speedMutex);
+    u = m_groundSpeed;
+  }
+  float yawRateRef = std::copysign(u/R,azimuth);
+  float delta = static_cast<float>((L+Ku*m*pow(u,2))*yawRateRef/u);
   (void) distance;
   return delta;
 }

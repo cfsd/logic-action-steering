@@ -40,6 +40,8 @@ class Steering {
    bool m_verbose;
    cluon::data::TimeStamp m_latestMessage;
    float m_prevPos;
-   float m_Kp;
+   float m_Ku;
+   std::mutex m_speedMutex;
+   float m_groundSpeed;
 };
 #endif
