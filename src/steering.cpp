@@ -31,6 +31,7 @@
 
 int32_t main(int32_t argc, char **argv) {
     int32_t retCode{0};
+    std::mutex steeringMutex;
     auto commandlineArguments = cluon::getCommandlineArguments(argc, argv);
     if ((0 == commandlineArguments.count("cid")) || (0 == commandlineArguments.count("verbose"))) {
         std::cout << argv[0] << " not enought input arguments. Assigning default values." << std::endl;
@@ -54,6 +55,7 @@ int32_t main(int32_t argc, char **argv) {
 
     auto catchContainer{[&steering](cluon::data::Envelope &&envelope)
       {
+          std::lock_guard<std::mutex> lockSteering(steeringMutex);
           steering.nextContainer(envelope);
       }};
 
