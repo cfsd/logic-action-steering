@@ -60,7 +60,7 @@ void Steering::nextContainer(cluon::data::Envelope &a_container){
         cluon::data::TimeStamp sampleTime = cluon::time::convert(tp);
 
         m_prevPos = rackPosition;
-        m_od4_proxy.send(out1,sampleTime,1);
+        m_od4_proxy.send(out1,sampleTime,314);
       }
     }
   }
