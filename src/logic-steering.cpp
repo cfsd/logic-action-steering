@@ -70,7 +70,7 @@ void Steering::nextContainer(cluon::data::Envelope &a_container){
   }
 
   if (a_container.dataType() == opendlv::proxy::GroundSpeedReading::ID()) {
-    if (a_container.senderStamp()==112) {
+    if (a_container.senderStamp()==1504) {
       auto speed = cluon::extractMessage<opendlv::proxy::GroundSpeedReading>(std::move(a_container));
       std::lock_guard<std::mutex> lockSpeed(m_speedMutex);
       m_groundSpeed = speed.groundSpeed();

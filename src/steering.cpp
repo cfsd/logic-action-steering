@@ -61,7 +61,7 @@ int32_t main(int32_t argc, char **argv) {
       }};
 
       od4.dataTrigger(opendlv::logic::action::AimPoint::ID(), catchContainer);
-      od4.dataTrigger(opendlv::proxy::GroundSpeedReading::ID(), catchContainer);
+      od4_proxy.dataTrigger(opendlv::proxy::GroundSpeedReading::ID(), catchContainer);
 
 
 
