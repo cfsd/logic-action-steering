@@ -45,7 +45,7 @@ void Steering::nextContainer(cluon::data::Envelope &a_container){
   if (a_container.dataType() == opendlv::logic::action::AimPoint::ID()) {
     if (cluon::time::toMicroseconds(a_container.sampleTimeStamp()) > cluon::time::toMicroseconds(m_latestMessage)) {
       auto steering = cluon::extractMessage<opendlv::logic::action::AimPoint>(std::move(a_container));
-      float tol = 2; //Needs to be calibrated
+      float tol = 0; //Needs to be calibrated
       float azimuth = steering.azimuthAngle();
       float distance = steering.distance();
       float delta = calcSteering(azimuth, distance);
