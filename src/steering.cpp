@@ -53,7 +53,7 @@ int32_t main(int32_t argc, char **argv) {
 
     Steering steering(VERBOSE, ID, od4_proxy, Kp);
 
-    auto catchContainer{[&steering](cluon::data::Envelope &&envelope)
+    auto catchContainer{[&steering, &steeringMutex](cluon::data::Envelope &&envelope)
       {
           std::lock_guard<std::mutex> lockSteering(steeringMutex);
           steering.nextContainer(envelope);
