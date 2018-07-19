@@ -44,5 +44,7 @@ class Steering {
    float m_Kp;
    std::mutex m_speedMutex;
    float m_groundSpeed;
+   float m_groundSpeedLeft;
+   float m_groundSpeedRight;
 };
 #endif

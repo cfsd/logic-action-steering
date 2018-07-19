@@ -35,6 +35,8 @@ Steering::Steering(bool verbose, uint32_t id, cluon::OD4Session &od4_proxy, floa
   , m_Kp(Kp)
   , m_speedMutex()
   , m_groundSpeed(0.0f)
+  , m_groundSpeedLeft(0.0f)
+  , m_groundSpeedRight(0.0f)
   {
   setUp(id);
   }
@@ -49,7 +51,7 @@ void Steering::nextContainer(cluon::data::Envelope &a_container){
   if (a_container.dataType() == opendlv::logic::action::AimPoint::ID()) {
     if (cluon::time::toMicroseconds(a_container.sampleTimeStamp()) > cluon::time::toMicroseconds(m_latestMessage)) {
       auto steering = cluon::extractMessage<opendlv::logic::action::AimPoint>(std::move(a_container));
-      float tol = 2; //Needs to be calibrated
+      float tol = 0.0f; //Needs to be calibrated
       float azimuth = steering.azimuthAngle();
       float distance = steering.distance();
       float delta = calcSteering(azimuth, distance);
@@ -70,11 +72,16 @@ void Steering::nextContainer(cluon::data::Envelope &a_container){
   }
 
   if (a_container.dataType() == opendlv::proxy::GroundSpeedReading::ID()) {
+    std::lock_guard<std::mutex> lockSpeed(m_speedMutex);
     if (a_container.senderStamp()==1504) {
       auto speed = cluon::extractMessage<opendlv::proxy::GroundSpeedReading>(std::move(a_container));
-      std::lock_guard<std::mutex> lockSpeed(m_speedMutex);
-      m_groundSpeed = speed.groundSpeed();
+      m_groundSpeedLeft = speed.groundSpeed();
     }
+    if (a_container.senderStamp()==1505) {
+      auto speed = cluon::extractMessage<opendlv::proxy::GroundSpeedReading>(std::move(a_container));
+      m_groundSpeedRight = speed.groundSpeed();
+    }
+    m_groundSpeed = std::max((m_groundSpeedLeft + m_groundSpeedRight)*0.5f,1.0f);
   }
 }
 

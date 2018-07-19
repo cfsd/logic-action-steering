@@ -1,15 +1,15 @@
 Determining if the include file pthread.h exists failed with the following output:
 Change Dir: /Users/oscar/github/cluon-cfsd/logic-action-steering/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_0613f/fast"
-/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_0613f.dir/build.make CMakeFiles/cmTC_0613f.dir/build
-Building C object CMakeFiles/cmTC_0613f.dir/CheckIncludeFile.c.o
-/Library/Developer/CommandLineTools/usr/bin/cc    -o CMakeFiles/cmTC_0613f.dir/CheckIncludeFile.c.o   -c /Users/oscar/github/cluon-cfsd/logic-action-steering/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_0613f
-/Applications/CMake.app/Contents/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0613f.dir/link.txt --verbose=1
-/Library/Developer/CommandLineTools/usr/bin/cc   -Wl,-search_paths_first -Wl,-headerpad_max_install_names -static-libgcc -static-libstdc++  CMakeFiles/cmTC_0613f.dir/CheckIncludeFile.c.o  -o cmTC_0613f 
+Run Build Command:"/usr/bin/make" "cmTC_bc007/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_bc007.dir/build.make CMakeFiles/cmTC_bc007.dir/build
+Building C object CMakeFiles/cmTC_bc007.dir/CheckIncludeFile.c.o
+/Library/Developer/CommandLineTools/usr/bin/cc    -o CMakeFiles/cmTC_bc007.dir/CheckIncludeFile.c.o   -c /Users/oscar/github/cluon-cfsd/logic-action-steering/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_bc007
+/Applications/CMake.app/Contents/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bc007.dir/link.txt --verbose=1
+/Library/Developer/CommandLineTools/usr/bin/cc   -Wl,-search_paths_first -Wl,-headerpad_max_install_names -static-libgcc -static-libstdc++  CMakeFiles/cmTC_bc007.dir/CheckIncludeFile.c.o  -o cmTC_bc007 
 clang: error: unsupported option '-static-libgcc'
-make[1]: *** [cmTC_0613f] Error 1
-make: *** [cmTC_0613f/fast] Error 2
+make[1]: *** [cmTC_bc007] Error 1
+make: *** [cmTC_bc007/fast] Error 2
 
 
