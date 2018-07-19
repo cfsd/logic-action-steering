@@ -25,7 +25,7 @@
 
 class Steering {
  public:
-  Steering(bool verbose, uint32_t id, cluon::OD4Session &od4, float, float);
+  Steering(bool verbose, uint32_t id, cluon::OD4Session &od4, float, float, float);
   ~Steering();
   void nextContainer(cluon::data::Envelope &);
 
@@ -46,5 +46,6 @@ class Steering {
    float m_groundSpeed;
    float m_groundSpeedLeft;
    float m_groundSpeedRight;
+   float m_filterWeight;
 };
 #endif

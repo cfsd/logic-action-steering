@@ -26,7 +26,7 @@
 
 
 
-Steering::Steering(bool verbose, uint32_t id, cluon::OD4Session &od4_proxy, float Ku, float Kp)
+Steering::Steering(bool verbose, uint32_t id, cluon::OD4Session &od4_proxy, float Ku, float Kp, float FilterWeight)
   : m_od4_proxy(od4_proxy)
   , m_verbose(verbose)
   , m_latestMessage()
@@ -37,6 +37,7 @@ Steering::Steering(bool verbose, uint32_t id, cluon::OD4Session &od4_proxy, floa
   , m_groundSpeed(0.0f)
   , m_groundSpeedLeft(0.0f)
   , m_groundSpeedRight(0.0f)
+  , m_filterWeight(FilterWeight)
   {
   setUp(id);
   }
@@ -56,7 +57,7 @@ void Steering::nextContainer(cluon::data::Envelope &a_container){
       float distance = steering.distance();
       float delta = calcSteering(azimuth, distance);
       float rackPosition = calcRackPosition(delta);
-
+      rackPosition = (float)(m_prevPos*m_filterWeight + rackPosition*(1-m_filterWeight));
 
       if (std::abs(rackPosition-m_prevPos) > tol){
         opendlv::proxy::GroundSteeringRequest out1;

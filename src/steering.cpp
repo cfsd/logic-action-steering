@@ -45,6 +45,7 @@ int32_t main(int32_t argc, char **argv) {
     const bool VERBOSE{(commandlineArguments["verbose"].size() != 0) ? commandlineArguments.count("verbose") != 0 : 1};
     const float Ku{(commandlineArguments["Ku"].size() != 0) ? static_cast<float>(std::stof(commandlineArguments["Ku"])) : (float) 0};
     const float Kp{(commandlineArguments["Kp"].size() != 0) ? static_cast<float>(std::stof(commandlineArguments["Kp"])) : (float) 1};
+    const float FilterWeight{(commandlineArguments["FilterWeight"].size() != 0) ? static_cast<float>(std::stof(commandlineArguments["FilterWeight"])) : (float) 1};
 
     std::cout << "Micro-Service ID:" << ID << std::endl;
 
@@ -52,7 +53,7 @@ int32_t main(int32_t argc, char **argv) {
     cluon::OD4Session od4{cid};
     cluon::OD4Session od4_proxy{cidSteering};
 
-    Steering steering(VERBOSE, ID, od4_proxy, Ku, Kp);
+    Steering steering(VERBOSE, ID, od4_proxy, Ku, Kp, FilterWeight);
 
     auto catchContainer{[&steering,&steeringMutex](cluon::data::Envelope &&envelope)
       {
